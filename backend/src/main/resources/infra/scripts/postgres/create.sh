@@ -32,5 +32,5 @@ docker run -d \
   --cpus=0.5 \
   -e POSTGRES_USER="$USERNAME" \
   -e POSTGRES_PASSWORD="$PASSWORD" \
-  -e POSTGRES_DB="#DBNAME" \
+  -e POSTGRES_DB="$DBNAME" \
   postgres:"$VERSION"
