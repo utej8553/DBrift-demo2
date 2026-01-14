@@ -25,4 +25,20 @@ public class UserController {
     public ResponseEntity<List<User>> getAll() {
         return ResponseEntity.ok(userService.findAll());
     }
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+
+        User user = userService.findByEmail(request.getEmail());
+
+        if (user == null) {
+            return ResponseEntity.status(401).body("User not found");
+        }
+
+        if (!user.getPassword().equals(request.getPassword())) {
+            return ResponseEntity.status(401).body("Invalid password");
+        }
+
+        return ResponseEntity.ok(user);
+    }
+
 }
