@@ -1,0 +1,148 @@
+/* Databases List Styles */
+
+.databases-list {
+  background: rgba(10, 10, 10, 0.7);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+}
+
+.list-header {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1.2fr 1fr 1.2fr 0.8fr;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  background: rgba(0, 0, 0, 0.3);
+  border-bottom: 1px solid var(--border);
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  position: sticky;
+  top: 0;
+}
+
+.list-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1.2fr 1fr 1.2fr 0.8fr;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.list-row:last-child {
+  border-bottom: none;
+}
+
+.list-row:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.col-name {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.col-type,
+.col-region,
+.col-status,
+.col-created,
+.col-actions {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.type-badge {
+  background: rgba(99, 102, 241, 0.2);
+  color: var(--accent-light);
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: inline-block;
+}
+
+/* Status Badges */
+.status-badge {
+  display: inline-block;
+  padding: 0.3rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.status-active {
+  background: rgba(16, 185, 129, 0.2);
+  color: var(--success);
+}
+
+.status-suspended {
+  background: rgba(245, 158, 11, 0.2);
+  color: var(--warning);
+}
+
+.status-deleted {
+  background: rgba(107, 114, 128, 0.2);
+  color: #9ca3af;
+}
+
+.col-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.col-actions button {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.col-actions button:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+@media (max-width: 1024px) {
+  .list-header,
+  .list-row {
+    grid-template-columns: 1.5fr 1fr 1fr 0.8fr;
+  }
+
+  .col-created {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .databases-list {
+    border-radius: 8px;
+  }
+
+  .list-header,
+  .list-row {
+    grid-template-columns: 1fr 0.8fr;
+    padding: 1rem;
+    font-size: 0.85rem;
+  }
+
+  .col-type,
+  .col-region,
+  .col-status {
+    display: none;
+  }
+
+  .col-actions {
+    justify-content: center;
+  }
+}
