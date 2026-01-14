@@ -4,5 +4,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class GlobalPorts {
-    public static String postgres = "5000";
+    public static String postgres = "5400";
 }
+
