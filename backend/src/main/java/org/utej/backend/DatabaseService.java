@@ -14,6 +14,7 @@ import java.util.Scanner;
 
 @Service
 public class DatabaseService {
+    private final DatabaseRepository databaseRepository;
 
     private final PortService portService;
 
@@ -125,5 +126,6 @@ public DatabaseService(DatabaseRepository databaseRepository,
         }
     }
 }
+
 
 
