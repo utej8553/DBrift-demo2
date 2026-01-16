@@ -24,53 +24,58 @@ public DatabaseService(DatabaseRepository databaseRepository,
 }
 
     public Database createDatabase(CreateDatabaseRequest req) {
-        if(Integer.valueOf(GlobalPorts.postgres)>6000){
-            System.out.println("Unable to create postgres database");
-        }
-        String username = req.getDbName() + UUID.randomUUID().toString().substring(0, 6);
-        String password = UUID.randomUUID().toString();
 
+    int port = portService.allocatePort();   // 🔥 SAFE allocation
+
+    String username = req.getDbName() + UUID.randomUUID().toString().substring(0, 6);
+    String password = UUID.randomUUID().toString();
+
+    try {
         runScript(
-                "infra/scripts/postgres/create.sh",
-                req.getDbName(),
-                username,
-                password,
-                GlobalPorts.postgres,
-                req.getDbVersion()
+            "infra/scripts/postgres/create.sh",
+            req.getDbName(),
+            username,
+            password,
+            String.valueOf(port),
+            req.getDbVersion()
         );
-
-        Database db = new Database();
-        db.setUserId(req.getUserId());
-        db.setDbName(req.getDbName());
-        db.setDescription(req.getDescription());
-        db.setDbType(req.getDbType());
-        db.setDbVersion(req.getDbVersion());
-
-        db.setUsername(username);
-        db.setPassword(password);
-        db.setPort(GlobalPorts.postgres);
-        db.setCreatedAt(new Date());
-        GlobalPorts.postgres = String.valueOf((Integer.valueOf(GlobalPorts.postgres)+1));
-
-        return databaseRepository.save(db);
+    } catch (Exception e) {
+        portService.releasePort(port); // 🔁 rollback
+        throw e;
     }
+
+    Database db = new Database();
+    db.setUserId(req.getUserId());
+    db.setDbName(req.getDbName());
+    db.setDescription(req.getDescription());
+    db.setDbType(req.getDbType());
+    db.setDbVersion(req.getDbVersion());
+    db.setUsername(username);
+    db.setPassword(password);
+    db.setPort(port);
+    db.setCreatedAt(new Date());
+
+    return databaseRepository.save(db);
+}
 
     public List<Database> getUserDatabases(Long userId) {
         return databaseRepository.findByUserId(userId);
     }
 
     public void deleteDatabase(Long dbId) {
-        Database db = databaseRepository.findById(dbId)
-                .orElseThrow(() -> new RuntimeException("DB not found"));
+    Database db = databaseRepository.findById(dbId)
+            .orElseThrow(() -> new RuntimeException("DB not found"));
 
-        runScript(
-                "infra/scripts/postgres/revoke.sh",
-                "postgres-"+db.getUsername(),
-                "pgdata_" + db.getUsername()
-        );
+    runScript(
+        "infra/scripts/postgres/revoke.sh",
+        "postgres-" + db.getUsername(),
+        "pgdata_" + db.getUsername()
+    );
 
-        databaseRepository.deleteById(dbId);
-    }
+    portService.releasePort(db.getPort()); // 🔓 free port
+    databaseRepository.deleteById(dbId);
+}
+
 
     // ---- utility ----
     private void runScript(String scriptPath, String... args) {
@@ -120,4 +125,5 @@ public DatabaseService(DatabaseRepository databaseRepository,
         }
     }
 }
+
 
