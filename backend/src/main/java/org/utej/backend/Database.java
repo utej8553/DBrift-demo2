@@ -21,7 +21,7 @@ public class Database {
     //credentials
     private String username;
     private String password;
-    private String port;
+    private int port;
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
 
@@ -108,3 +108,4 @@ public class Database {
         this.createdAt = createdAt;
     }
 }
+
